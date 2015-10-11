@@ -12,8 +12,9 @@ Add the following dependency to your project
 libraryDependencies += "de.leanovate" %% "play-cassandra-evolutions" % "1.0"
 ```
 
-Since there are many ways to configure the contact points to a cassandra cluster, the module
-does not make any presumptions about it. Instead you have to provide your own implementation for
+Since there are many ways to configure the contact points to a cassandra cluster (with or
+without some sort of service discovery), so this module does not make any presumptions
+about it. Instead you have to provide your own implementation for
 the `de.leanovate.play.cassandra.evolutions.CassandraEndpointConfig` trait. The
 most simple implementation might look like this
 
