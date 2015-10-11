@@ -1,12 +1,23 @@
 package dao
 
-import com.datastax.driver.core.Cluster
-import de.leanovate.play.cassandra.evolutions.CassandraEndpointConfig
+import java.net.InetAddress
 
-class EndpointsConfig extends CassandraEndpointConfig {
+import com.datastax.driver.core.Cluster
+import com.google.inject.Inject
+import de.leanovate.play.cassandra.evolutions.CassandraEndpointConfig
+import play.api.Configuration
+
+import scala.collection.JavaConversions._
+
+class EndpointsConfig @Inject()(
+                                 configuration: Configuration
+                                 ) extends CassandraEndpointConfig {
   override def databases: Seq[String] = Seq("cassandra")
 
   override def clusterForDatabase(db: String): Cluster = {
-    Cluster.builder().addContactPoints("10.211.55.19").build()
+    val addresses: Seq[String] = configuration.getStringSeq("cassandra.hosts").getOrElse(Seq("localhost"))
+    Cluster.builder()
+      .addContactPoints(addresses.flatMap(InetAddress.getAllByName))
+      .build()
   }
 }
