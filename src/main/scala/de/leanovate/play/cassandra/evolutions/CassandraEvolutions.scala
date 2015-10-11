@@ -16,7 +16,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
 
   import CassandraEvolutions._
 
-  def evolve(scripts: Seq[Script], autocommit: Boolean) {
+  def evolve(scripts: Seq[Script], autocommit: Boolean): Unit = {
     def logBefore(script: Script)(implicit session: Session) {
       script match {
         case UpScript(e) =>
@@ -39,7 +39,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
       }
     }
 
-    def logAfter(script: Script)(implicit session: Session) {
+    def logAfter(script: Script)(implicit session: Session): Unit = {
       script match {
         case UpScript(e) =>
           session.execute(
@@ -56,7 +56,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
       }
     }
 
-    def updateLastProblem(message: String, revision: Int)(implicit session: Session) {
+    def updateLastProblem(message: String, revision: Int)(implicit session: Session): Unit = {
       session.execute(
         update(evolutionsKeyspace, "play_evolutions")
           .`with`(set("last_problem", message))
@@ -161,7 +161,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
             row.getString("apply_script"),
             row.getString("revert_script")
           )
-      }
+      }.sortBy(_.revision).reverse
     } finally {
       session.close()
     }
@@ -198,10 +198,10 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
 
           val humanScript = "# --- Rev:" + revision + "," + (if (state == "applying_up") "Ups" else "Downs") + " - " + hash + "\n\n" + script
 
-          throw InconsistentDatabase(name, humanScript, error, revision)
+          throw CassandraInconsistentDatabase(name, humanScript, error, revision)
       }
     } catch {
-      case e: InconsistentDatabase => throw e
+      case e: CassandraInconsistentDatabase => throw e
       case NonFatal(_) => createPlayEvolutionsTable()
     } finally {
       session.close()

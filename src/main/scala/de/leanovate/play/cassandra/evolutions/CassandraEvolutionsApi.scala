@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import play.api.db.evolutions._
 
-class CassandraEvolutionsApi @Inject()(resolver: CassandraResolver) extends EvolutionsApi {
+class CassandraEvolutionsApi @Inject()(endpointsConfig: CassandraEndpointConfig) extends EvolutionsApi {
   override def scripts(db: String, evolutions: Seq[Evolution]): Seq[Script] =
     cassandraEvolutions(db).scripts(evolutions)
 
@@ -21,5 +21,5 @@ class CassandraEvolutionsApi @Inject()(resolver: CassandraResolver) extends Evol
     cassandraEvolutions(db).resolve(revision)
 
   private def cassandraEvolutions(db: String) =
-    new CassandraEvolutions(db, resolver.resolveCluster(db))
+    new CassandraEvolutions(db, endpointsConfig.clusterForDatabase(db))
 }
