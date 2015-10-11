@@ -58,6 +58,16 @@ Also as usual, automatic evolutions have to be activated in your configuration o
 play.evolutions.autoApply=true 
 ```
 
+## Under the hood
+
+Just like the standard play evolutions the current state is stored in the database itself.
+For this purpose the module creates an additional keyspace `<dbname>_evolutions` with a
+single table `play_evolutions`.
+
+The main reason for an additional keyspace is to interfere with you production data as
+little as possible and to give you the opportunity to create the production keyspace
+(and its parameters) via evolution files.
+
 ## License
 
 [MIT Licence](http://opensource.org/licenses/MIT)
