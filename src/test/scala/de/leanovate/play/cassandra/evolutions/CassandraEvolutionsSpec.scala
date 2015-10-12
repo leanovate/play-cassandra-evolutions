@@ -34,8 +34,14 @@ class CassandraEvolutionsSpec extends FlatSpec with MockitoSugar with MustMatche
     val reader = new CassandraEvolutionsReader(Environment.simple())
     val cluster = mock[Cluster]
     val session = mock[Session]
-    val evolutions = new CassandraEvolutions("fixture", cluster)
+    val clusterConfiguration = mock[Configuration]
+    val protocalOptions = mock[ProtocolOptions]
 
     when(cluster.connect()).thenReturn(session)
+    when(cluster.getConfiguration).thenReturn(clusterConfiguration)
+    when(clusterConfiguration.getProtocolOptions).thenReturn(protocalOptions)
+    when(protocalOptions.getProtocolVersion).thenReturn(ProtocolVersion.V4)
+
+    val evolutions = new CassandraEvolutions("fixture", cluster)
   }
 }
