@@ -26,12 +26,13 @@ class ApplicationCassandraEvolutions @Inject()(
   private def runEvolutions(db: String): Unit = {
     val dbConfig = config.forDatasource(db)
     if (dbConfig.enabled) {
-      endpointsConfig.executeWithLock(db) {
-        val scripts = evolutions.scripts(db, reader)
-        val hasDown = scripts.exists(_.isInstanceOf[DownScript])
-        val autocommit = dbConfig.autocommit
 
-        if (scripts.nonEmpty) {
+      if (evolutions.scripts(db, reader).nonEmpty) {
+
+        endpointsConfig.executeWithLock(db) {
+          val scripts = evolutions.scripts(db, reader)
+          val hasDown = scripts.exists(_.isInstanceOf[DownScript])
+          val autocommit = dbConfig.autocommit
 
           import Evolutions.toHumanReadableScript
 
