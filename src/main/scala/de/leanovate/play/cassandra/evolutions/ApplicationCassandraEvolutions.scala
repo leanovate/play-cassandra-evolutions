@@ -26,32 +26,34 @@ class ApplicationCassandraEvolutions @Inject()(
   private def runEvolutions(db: String): Unit = {
     val dbConfig = config.forDatasource(db)
     if (dbConfig.enabled) {
-      val scripts = evolutions.scripts(db, reader)
-      val hasDown = scripts.exists(_.isInstanceOf[DownScript])
-      val autocommit = dbConfig.autocommit
+      endpointsConfig.executeWithLock(db) {
+        val scripts = evolutions.scripts(db, reader)
+        val hasDown = scripts.exists(_.isInstanceOf[DownScript])
+        val autocommit = dbConfig.autocommit
 
-      if (scripts.nonEmpty) {
+        if (scripts.nonEmpty) {
 
-        import Evolutions.toHumanReadableScript
+          import Evolutions.toHumanReadableScript
 
-        environment.mode match {
-          case Mode.Test => evolutions.evolve(db, scripts, autocommit)
-          case Mode.Dev if dbConfig.autoApply => evolutions.evolve(db, scripts, autocommit)
-          case Mode.Prod if !hasDown && dbConfig.autoApply => evolutions.evolve(db, scripts, autocommit)
-          case Mode.Prod if hasDown && dbConfig.autoApply && dbConfig.autoApplyDowns => evolutions.evolve(db, scripts, autocommit)
-          case Mode.Prod if hasDown =>
-            logger.warn(s"Your production database [$db] needs evolutions, including downs! \n\n${toHumanReadableScript(scripts)}")
-            logger.warn(s"Run with -Dplay.evolutions.db.$db.autoApply=true and -Dplay.evolutions.db.$db.autoApplyDowns=true if you want to run them automatically, including downs (be careful, especially if your down evolutions drop existing data)")
+          environment.mode match {
+            case Mode.Test => evolutions.evolve(db, scripts, autocommit)
+            case Mode.Dev if dbConfig.autoApply => evolutions.evolve(db, scripts, autocommit)
+            case Mode.Prod if !hasDown && dbConfig.autoApply => evolutions.evolve(db, scripts, autocommit)
+            case Mode.Prod if hasDown && dbConfig.autoApply && dbConfig.autoApplyDowns => evolutions.evolve(db, scripts, autocommit)
+            case Mode.Prod if hasDown =>
+              logger.warn(s"Your production database [$db] needs evolutions, including downs! \n\n${toHumanReadableScript(scripts)}")
+              logger.warn(s"Run with -Dplay.evolutions.db.$db.autoApply=true and -Dplay.evolutions.db.$db.autoApplyDowns=true if you want to run them automatically, including downs (be careful, especially if your down evolutions drop existing data)")
 
-            throw CassandraInvalidDatabaseRevision(db, toHumanReadableScript(scripts))
+              throw CassandraInvalidDatabaseRevision(db, toHumanReadableScript(scripts))
 
-          case Mode.Prod =>
-            logger.warn(s"Your production database [$db] needs evolutions! \n\n${toHumanReadableScript(scripts)}")
-            logger.warn(s"Run with -Dplay.evolutions.db.$db.autoApply=true if you want to run them automatically (be careful)")
+            case Mode.Prod =>
+              logger.warn(s"Your production database [$db] needs evolutions! \n\n${toHumanReadableScript(scripts)}")
+              logger.warn(s"Run with -Dplay.evolutions.db.$db.autoApply=true if you want to run them automatically (be careful)")
 
-            throw CassandraInvalidDatabaseRevision(db, toHumanReadableScript(scripts))
+              throw CassandraInvalidDatabaseRevision(db, toHumanReadableScript(scripts))
 
-          case _ => throw CassandraInvalidDatabaseRevision(db, toHumanReadableScript(scripts))
+            case _ => throw CassandraInvalidDatabaseRevision(db, toHumanReadableScript(scripts))
+          }
         }
       }
     }
