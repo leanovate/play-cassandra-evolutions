@@ -48,6 +48,7 @@ play.modules.enabled += CassandraConfigModule
 ```
 
 As usually evolutions can now be added to (in the example above `dbname` is just 'cassandra':
+
 * conf/evolutions/`dbname`/1.cql
 * conf/evolutions/`dbname`/2.cql
 * ...
