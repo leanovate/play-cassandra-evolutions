@@ -9,7 +9,7 @@ The current version is supposed to run with Play 2.4 only.
 Add the following dependency to your project
 
 ```
-libraryDependencies += "de.leanovate" %% "play-cassandra-evolutions" % "1.0"
+libraryDependencies += "de.leanovate" %% "play-cassandra-evolutions" % "1.1"
 ```
 
 Since there are many ways to configure the contact points to a cassandra cluster (with or
