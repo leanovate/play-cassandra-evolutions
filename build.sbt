@@ -6,8 +6,10 @@ organization := "de.leanovate"
 
 scalaVersion := "2.11.7"
 
+val playVersion = "2.4.3"
+
 libraryDependencies ++= Seq(
-  "com.typesafe.play" %% "play-jdbc-evolutions" % "2.4.3" % "provided",
+  "com.typesafe.play" %% "play-jdbc-evolutions" % playVersion % "provided",
   "com.datastax.cassandra" % "cassandra-driver-core" % "2.2.0-rc3" % "provided",
   "org.scalatest" %% "scalatest" % "2.2.4" % "test",
   "org.mockito" % "mockito-core" % "1.10.19" % "test"
