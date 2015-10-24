@@ -14,7 +14,7 @@ libraryDependencies ++= Seq(
   ws,
   specs2 % Test,
   "com.datastax.cassandra" % "cassandra-driver-core" % "2.2.0-rc3",
-  "de.leanovate" %% "play-cassandra-evolutions" % "1.2-SNAPSHOT"
+  "de.leanovate" %% "play-cassandra-evolutions" % "2.4.0"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
