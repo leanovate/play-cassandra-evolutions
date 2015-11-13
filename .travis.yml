@@ -1,6 +1,9 @@
 language: scala
 scala:
-   - "2.11.7"
+- 2.11.7
 jdk:
-   - oraclejdk8
+- oraclejdk8
 sudo: false
+notifications:
+  slack:
+    secure: ZNDi3onloIwaE6d013NJctShynOIlN+lWKEA3zP3zme3Y9rONY/QCU5/Gm2qM3XPxKAmUN6L5W940RUAaobi/tWSGtgQH88Wc/07xd3yHwHh5i+l8PUR2X6CHuuHcXrCH19E0evnSpmXRjPyZKlQh3RBGojJbcNVPm5iTnKBddgJbDXpZj1xJwadxiHwj3MRSvCVyjoWMOdwJQSBObwT3FwpyBAHJhwi7ZmE9S1yIya93SZjE0xRBtUQqYsbwHCHFAEpiA27IbBBLmz0qWpAjdOb3ZWgqeYJfLUXglo8PjVuySlHwAuxC32dPk8qOYg+SMXdO6TnxWrPPfs19ChpiOfvxt17UzJGwjdILlrC69Lva8lwwwikquJZHCmoODMQP32GgagjVPgBH8u9PXOC8djmZ1E6Fln/gFx2CGRosEIwjM/+oD8iWdFhHIbdSYHMwIgtp7MVpyrQIA1e6CW4dCOOOu6W1ApWMINyU1v0MTYSciPt05x9GkVQRwvwUC3yBFXoJ5LKtd7OEQSlYVZsYpK0l3z06koouUCQACaDLUR+UPAhVt388jDu8IdtrMVZX52xhXJVuIx+q+Fgl/zAuOjzuILFGD1A9ylTcNHgKzc+++cOfczde218yoiOtVg7Zl84VF3CHu7P5HRQy1S1AKnqycaAaNmCdThLvulCVvA=
