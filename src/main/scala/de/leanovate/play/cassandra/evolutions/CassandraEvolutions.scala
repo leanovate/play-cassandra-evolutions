@@ -14,7 +14,6 @@ import scala.util.control.NonFatal
 
 class CassandraEvolutions(name: String, cluster: Cluster) {
   val evolutionsKeyspace = s"${name}_evolutions"
-  val queryBuilder = new QueryBuilder(cluster)
 
   import CassandraEvolutions._
 
@@ -23,7 +22,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
       script match {
         case UpScript(e) =>
           session.execute(
-            queryBuilder.insertInto(evolutionsKeyspace, "play_evolutions")
+            QueryBuilder.insertInto(evolutionsKeyspace, "play_evolutions")
               .value("id", e.revision)
               .value("hash", e.hash)
               .value("applied_at", new Date)
@@ -34,7 +33,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
           )
         case DownScript(e) =>
           session.execute(
-            queryBuilder.update(evolutionsKeyspace, "play_evolutions")
+            QueryBuilder.update(evolutionsKeyspace, "play_evolutions")
               .`with`(set("state", "applied"))
               .where(eql("id", e.revision))
           )
@@ -45,13 +44,13 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
       script match {
         case UpScript(e) =>
           session.execute(
-            queryBuilder.update(evolutionsKeyspace, "play_evolutions")
+            QueryBuilder.update(evolutionsKeyspace, "play_evolutions")
               .`with`(set("state", "applied"))
               .where(eql("id", e.revision))
           )
         case DownScript(e) =>
           session.execute(
-            queryBuilder.delete().all()
+            QueryBuilder.delete().all()
               .from(evolutionsKeyspace, "play_evolutions")
               .where(eql("id", e.revision))
           )
@@ -60,7 +59,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
 
     def updateLastProblem(message: String, revision: Int)(implicit session: Session): Unit = {
       session.execute(
-        queryBuilder.update(evolutionsKeyspace, "play_evolutions")
+        QueryBuilder.update(evolutionsKeyspace, "play_evolutions")
           .`with`(set("last_problem", message))
           .where(eql("id", revision))
       )
@@ -131,13 +130,13 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
 
     try {
       session.execute(
-        queryBuilder.update(evolutionsKeyspace, "play_evolutions")
+        QueryBuilder.update(evolutionsKeyspace, "play_evolutions")
           .`with`(set("state", "applied"))
           .where(eql("state", "applying_up"))
           .and(eql("id", revision))
       )
       session.execute(
-        queryBuilder.delete().all()
+        QueryBuilder.delete().all()
           .from(evolutionsKeyspace, "play_evolutions")
           .where(eql("state", "applying_down"))
           .and(eql("id", revision))
@@ -154,7 +153,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
 
     try {
       session.execute(
-        queryBuilder.select().all()
+        QueryBuilder.select().all()
           .from(evolutionsKeyspace, "play_evolutions")
       ).all().map {
         row =>
@@ -181,7 +180,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
     implicit val session = cluster.connect()
     try {
       session.execute(
-        queryBuilder.select().all()
+        QueryBuilder.select().all()
           .from(evolutionsKeyspace, "play_evolutions")
           .where(in("state", "applying_up", "applying_down"))
       ).all().headOption.foreach {
