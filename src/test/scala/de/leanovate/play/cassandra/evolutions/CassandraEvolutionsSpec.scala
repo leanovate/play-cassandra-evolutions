@@ -40,7 +40,6 @@ class CassandraEvolutionsSpec extends FlatSpec with MockitoSugar with MustMatche
     when(cluster.connect()).thenReturn(session)
     when(cluster.getConfiguration).thenReturn(clusterConfiguration)
     when(clusterConfiguration.getProtocolOptions).thenReturn(protocalOptions)
-    when(protocalOptions.getProtocolVersion).thenReturn(ProtocolVersion.V4)
 
     val evolutions = new CassandraEvolutions("fixture", cluster)
   }
