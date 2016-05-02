@@ -10,7 +10,7 @@ class CassandraEvolutionsWebCommands @Inject()(
                                                 @Named("cassandra") evolutions: EvolutionsApi,
                                                 @Named("cassandra") reader: EvolutionsReader,
                                                 config: EvolutionsConfig
-                                                ) extends HandleWebCommandSupport {
+                                              ) extends HandleWebCommandSupport {
   def handleWebCommand(request: play.api.mvc.RequestHeader, buildLink: play.core.BuildLink, path: java.io.File): Option[play.api.mvc.Result] = {
     val applyEvolutions = """/@cassandraEvolutions/apply/([a-zA-Z0-9_]+)""".r
     val resolveEvolutions = """/@cassandraEvolutions/resolve/([a-zA-Z0-9_]+)/([0-9]+)""".r
@@ -20,15 +20,15 @@ class CassandraEvolutionsWebCommands @Inject()(
     request.path match {
       case applyEvolutions(db) =>
         Some {
-          val scripts = evolutions.scripts(db, reader)
-          evolutions.evolve(db, scripts, config.forDatasource(db).autocommit)
+          val scripts = evolutions.scripts(db, reader, config.forDatasource(db).schema)
+          evolutions.evolve(db, scripts, config.forDatasource(db).autocommit, config.forDatasource(db).schema)
           buildLink.forceReload()
           play.api.mvc.Results.Redirect(redirectUrl)
         }
 
       case resolveEvolutions(db, rev) =>
         Some {
-          evolutions.resolve(db, rev.toInt)
+          evolutions.resolve(db, rev.toInt, config.forDatasource(db).schema)
           buildLink.forceReload()
           play.api.mvc.Results.Redirect(redirectUrl)
         }

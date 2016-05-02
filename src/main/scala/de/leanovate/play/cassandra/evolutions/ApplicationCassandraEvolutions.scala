@@ -26,21 +26,22 @@ class ApplicationCassandraEvolutions @Inject()(
   private def runEvolutions(db: String): Unit = {
     val dbConfig = config.forDatasource(db)
     if (dbConfig.enabled) {
+      val schema = dbConfig.schema
 
-      if (evolutions.scripts(db, reader).nonEmpty) {
+      if (evolutions.scripts(db, reader, schema).nonEmpty) {
 
         endpointsConfig.executeWithLock(db) {
-          val scripts = evolutions.scripts(db, reader)
+          val scripts = evolutions.scripts(db, reader, schema)
           val hasDown = scripts.exists(_.isInstanceOf[DownScript])
           val autocommit = dbConfig.autocommit
 
           import Evolutions.toHumanReadableScript
 
           environment.mode match {
-            case Mode.Test => evolutions.evolve(db, scripts, autocommit)
-            case Mode.Dev if dbConfig.autoApply => evolutions.evolve(db, scripts, autocommit)
-            case Mode.Prod if !hasDown && dbConfig.autoApply => evolutions.evolve(db, scripts, autocommit)
-            case Mode.Prod if hasDown && dbConfig.autoApply && dbConfig.autoApplyDowns => evolutions.evolve(db, scripts, autocommit)
+            case Mode.Test => evolutions.evolve(db, scripts, autocommit, schema)
+            case Mode.Dev if dbConfig.autoApply => evolutions.evolve(db, scripts, autocommit, schema)
+            case Mode.Prod if !hasDown && dbConfig.autoApply => evolutions.evolve(db, scripts, autocommit, schema)
+            case Mode.Prod if hasDown && dbConfig.autoApply && dbConfig.autoApplyDowns => evolutions.evolve(db, scripts, autocommit, schema)
             case Mode.Prod if hasDown =>
               logger.warn(s"Your production database [$db] needs evolutions, including downs! \n\n${toHumanReadableScript(scripts)}")
               logger.warn(s"Run with -Dplay.evolutions.db.$db.autoApply=true and -Dplay.evolutions.db.$db.autoApplyDowns=true if you want to run them automatically, including downs (be careful, especially if your down evolutions drop existing data)")

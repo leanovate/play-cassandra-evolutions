@@ -92,7 +92,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
 
           val humanScript = "# --- Rev:" + lastScript.evolution.revision + "," + (if (lastScript.isInstanceOf[UpScript]) "Ups" else "Downs") + " - " + lastScript.evolution.hash + "\n\n" + (if (lastScript.isInstanceOf[UpScript]) lastScript.evolution.sql_up else lastScript.evolution.sql_down)
 
-          throw InconsistentDatabase(name, humanScript, message, lastScript.evolution.revision)
+          throw InconsistentDatabase(name, humanScript, message, lastScript.evolution.revision, true)
         } else {
           updateLastProblem(message, applying)
         }

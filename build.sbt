@@ -6,7 +6,7 @@ organization := "de.leanovate"
 
 scalaVersion := "2.11.7"
 
-val playVersion = "2.4.6"
+val playVersion = "2.5.3"
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-jdbc-evolutions" % playVersion % "provided",
