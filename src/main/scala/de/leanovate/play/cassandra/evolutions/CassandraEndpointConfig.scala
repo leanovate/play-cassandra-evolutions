@@ -29,9 +29,19 @@ trait CassandraEndpointConfig {
     * Get a session to a logical database.
     *
     * @param db logical database name (from the sequence above)
-    * @return Cassandra cluster configuration
+    * @return Cassandra session to the database
     */
   def sessionForDatabase(db: String): Session = clusterForDatabase(db).connect()
+
+  /**
+    * Define the evolution keyspace for a logical database.
+    * The evolution keyspace will contain a single table "play_evolutions" tracking the evolutions that
+    * have already been applied.
+    *
+    * @param db logical database name (from the sequence above)
+    * @return Keyspace name for the database
+    */
+  def evolutionKeyspaceForDatabase(db: String): String = s"${db}_evolutions"
 
   /**
     * Run a block with a cluster wide lock.

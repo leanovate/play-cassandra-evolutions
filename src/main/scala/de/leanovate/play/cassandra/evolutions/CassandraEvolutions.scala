@@ -13,7 +13,7 @@ import scala.collection.JavaConversions._
 import scala.util.control.NonFatal
 
 class CassandraEvolutions(name: String, endpointConfig: CassandraEndpointConfig) {
-  val evolutionsKeyspace = s"${name}_evolutions"
+  val evolutionsKeyspace = endpointConfig.evolutionKeyspaceForDatabase(name)
 
   import CassandraEvolutions._
 
