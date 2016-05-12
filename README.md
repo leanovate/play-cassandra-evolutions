@@ -1,15 +1,16 @@
 # play-cassandra-evolutions
 
-Module for Play framework 2.4 to apply evolutions to a cassandra database. Behaves mostly like the standard evolution module for JDBC based databases
+Module for Play framework 2.5 to apply evolutions to a cassandra database.
+Behaves mostly like the standard evolution module for JDBC based databases.
 
 ## Usage
 
-The current version is supposed to run with Play 2.4 only.
+The current version is supposed to run with Play 2.5 only. Thre is also a slightly older version for Play 2.4
 
 Add the following dependency to your project
 
 ```
-libraryDependencies += "de.leanovate" %% "play-cassandra-evolutions" % "1.1"
+libraryDependencies += "de.leanovate" %% "play-cassandra-evolutions" % "2.5.0"
 ```
 
 Since there are many ways to configure the contact points to a cassandra cluster (with or

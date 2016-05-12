@@ -6,15 +6,16 @@ version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.11.8"
 
 libraryDependencies ++= Seq(
   jdbc,
   cache,
   ws,
   specs2 % Test,
-  "com.datastax.cassandra" % "cassandra-driver-core" % "2.2.0-rc3",
-  "de.leanovate" %% "play-cassandra-evolutions" % "2.4.0"
+  "com.typesafe.play" %% "play-jdbc-evolutions" % "2.5.3",
+  "com.datastax.cassandra" % "cassandra-driver-core" % "2.1.9",
+  "de.leanovate" %% "play-cassandra-evolutions" % "2.5.1-SNAPSHOT"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
