@@ -12,7 +12,7 @@ import play.api.db.evolutions._
 import scala.collection.JavaConversions._
 import scala.util.control.NonFatal
 
-class CassandraEvolutions(name: String, cluster: Cluster) {
+class CassandraEvolutions(name: String, endpointConfig: CassandraEndpointConfig) {
   val evolutionsKeyspace = s"${name}_evolutions"
 
   import CassandraEvolutions._
@@ -67,7 +67,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
 
     checkEvolutionsState()
 
-    implicit val session = cluster.connect()
+    implicit val session = endpointConfig.sessionForDatabase(name)
 
     var applying = -1
     var lastScript: Script = null
@@ -126,7 +126,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
   }
 
   def resolve(revision: Int) = {
-    implicit val session = cluster.connect()
+    implicit val session = endpointConfig.sessionForDatabase(name)
 
     try {
       session.execute(
@@ -149,7 +149,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
   private def databaseEvolutions(): Seq[Evolution] = {
     checkEvolutionsState()
 
-    implicit val session = cluster.connect()
+    implicit val session = endpointConfig.sessionForDatabase(name)
 
     try {
       session.execute(
@@ -177,7 +177,7 @@ class CassandraEvolutions(name: String, cluster: Cluster) {
       }
     }
 
-    implicit val session = cluster.connect()
+    implicit val session = endpointConfig.sessionForDatabase(name)
     try {
       session.execute(
         QueryBuilder.select().all()

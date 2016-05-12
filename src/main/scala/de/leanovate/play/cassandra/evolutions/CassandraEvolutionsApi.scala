@@ -21,5 +21,5 @@ class CassandraEvolutionsApi @Inject()(endpointsConfig: CassandraEndpointConfig)
     cassandraEvolutions(db).resolve(revision)
 
   private def cassandraEvolutions(db: String) =
-    new CassandraEvolutions(db, endpointsConfig.clusterForDatabase(db))
+    new CassandraEvolutions(db, endpointsConfig)
 }
