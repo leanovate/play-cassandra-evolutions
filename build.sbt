@@ -4,14 +4,14 @@ name := "play-cassandra-evolutions"
 
 organization := "de.leanovate"
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.12.4"
 
-val playVersion = "2.5.3"
+val playVersion = "2.6.7"
 
 libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-jdbc-evolutions" % playVersion % "provided",
-  "com.datastax.cassandra" % "cassandra-driver-core" % "2.1.9" % "provided",
-  "org.scalatest" %% "scalatest" % "2.2.4" % "test",
+  "com.datastax.cassandra" % "cassandra-driver-core" % "3.3.1" % "provided",
+  "org.scalatest" %% "scalatest" % "3.0.4" % "test",
   "org.mockito" % "mockito-core" % "1.10.19" % "test"
 )
 
